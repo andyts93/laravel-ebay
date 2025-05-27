@@ -57,6 +57,5 @@ class EbayListing extends Model
                 ...(!$this->ebay_published_at ? ['ebay_published_at' => now()] : []),
             ]);
         }
-        dump($result);
     }
 }

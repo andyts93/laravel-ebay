@@ -233,7 +233,7 @@ class EbayRestApiService
         return $options;
     }
 
-    private function makeRequest($method, $url, $payload = null)
+    private function makeRequest($method, $url, $payload = null, $retries = 0)
     {
         $headers = [
             'Authorization' => 'Bearer ' . $this->getAccessToken(),
@@ -265,6 +265,11 @@ class EbayRestApiService
         } catch (RequestException $e) {
             $errorBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : '';
             $errorData = json_decode($errorBody);
+
+            if ($e->getCode() === 401 && $retries < 3) {
+                EbaySettings::set('access_token', '');
+                return $this->makeRequest($method, $url, $payload, $retries + 1);
+            }
 
             return [
                 'success' => false,
