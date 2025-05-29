@@ -349,9 +349,6 @@ class EbayRestApiService
                 EbaySettings::set('refresh_token', $data['refresh_token']);
             }
 
-            // Salva il token in cache per la durata specificata
-//            Cache::put('ebay_access_token', $data['access_token'], $data['expires_in'] - 60);
-
             return $data['access_token'];
 
         } catch (RequestException $e) {
