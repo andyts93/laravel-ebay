@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Facade;
  * @method static array createFulfillmentPolicy(array $policyData)
  * @method static array createPaymentPolicy(array $policyData)
  * @method static array createReturnPolicy(array $policyData)
+ * @method static array getRootCategory()
  * @method static array getCategories(string $categoryId = null)
  * @method static array getCategoryAspects(string $categoryId)
+ * @method static array getOrders(array $orderIds = [], array $filter = [], integer $limit = 50, integer $offset = 0, array $fieldGroups = [])
  */
 class EbayApi extends Facade
 {

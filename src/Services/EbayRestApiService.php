@@ -184,12 +184,19 @@ class EbayRestApiService
         return $this->makeRequest('POST', $url, $payload);
     }
 
+    public function getRootCategory()
+    {
+        return $this->makeRequest('GET', $this->baseUrl . '/commerce/taxonomy/v1/get_default_category_tree_id?marketplace_id=' . config('ebay.marketplace_id'));
+    }
+
     /**
      * Get ebay categories
      */
     public function getCategories($categoryId = null)
     {
-        $url = $this->baseUrl . '/commerce/taxonomy/v1/category_tree/0';
+        $rootCategory = $this->getRootCategory()['data']->categoryTreeId;
+
+        $url = $this->baseUrl . '/commerce/taxonomy/v1/category_tree/' . $rootCategory;
 
         if ($categoryId) {
             $url .= '/get_category_subtree?category_id=' . $categoryId;
@@ -205,6 +212,29 @@ class EbayRestApiService
     {
         $url = $this->baseUrl . '/commerce/taxonomy/v1/category_tree/' . $this->marketplaceId . '/get_item_aspects_for_category';
         $url .= '?category_id=' . $categoryId;
+
+        return $this->makeRequest('GET', $url);
+    }
+
+    public function getOrders($orderIds = [], $filter = [], $limit = 50, $offset = 0, $taxBreakdown = false)
+    {
+        $url = $this->baseUrl . "/sell/fulfillment/v1/order?limit={$limit}&offset={$offset}";
+        if (!empty($orderIds)) {
+            $url .= "&orderIds=" . implode(',', $orderIds);
+        }
+        if (!empty($filter)) {
+            $replacements = ['[', ']', '{', '}', '|'];
+            $filters = array_map(function($el) use ($replacements) {
+                foreach ($replacements as $replacement) {
+                    $el = preg_replace('/\\' . $replacement . '/', urlencode($replacement), $el);
+                }
+                return $el;
+            }, $filter);
+            $url .= '&filter=' . implode(',', $filters);
+        }
+        if ($taxBreakdown) {
+            $url .= '&fieldGroups=TAX_BREAKDOWN';
+        }
 
         return $this->makeRequest('GET', $url);
     }
@@ -240,6 +270,7 @@ class EbayRestApiService
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
             'Content-Language' => config('ebay.default_content_language'),
+            'Accept-Language' => config('ebay.default_content_language')
         ];
 
         $options = [

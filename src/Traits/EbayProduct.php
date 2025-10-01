@@ -42,6 +42,7 @@ trait EbayProduct
             $offerId = $result['data']->offerId;
         }
         elseif ($result['error'][0]?->errorId === 25002) {
+            dd($result['error']);
             $offerId = collect($result['error'][0]->parameters)->firstWhere('name', 'offerId')?->value;
         }
 
