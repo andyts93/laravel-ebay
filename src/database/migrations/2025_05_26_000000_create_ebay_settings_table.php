@@ -46,9 +46,30 @@ return new class extends Migration {
             ],
             [
                 'key' => 'default_location_id',
-                'value' => 'default',
+                'value' => null,
                 'type' => 'string',
                 'description' => 'Default store/warehouse',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'return_policy_id',
+                'value' => null,
+                'type' => 'string',
+                'description' => 'Return policy',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'payment_policy_id',
+                'value' => null,
+                'type' => 'string',
+                'description' => 'Payment policy',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'fulfillment_policy_id',
+                'value' => null,
+                'type' => 'string',
+                'description' => 'Fulfillment policy',
                 'is_public' => true,
             ],
         ];

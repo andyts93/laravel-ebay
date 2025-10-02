@@ -32,12 +32,13 @@ class EbayListing extends Model
         return (config('ebay.sandbox') ? 'https://sandbox.ebay.com/' : 'https://ebay.com/') . "itm/{$this->ebay_listing_id}";
     }
 
-    public function updateOffer($offerData)
+    public function updateOffer($offerData, $customPayload = [])
     {
         $result = EbayApi::upsertOffer([
             'sku' => $this->sku,
             ...$offerData,
-        ], $this->ebay_offer_id);
+        ], $this->ebay_offer_id, $customPayload);
+        dd($result);
 
         if ($result['success']) {
             $this->update([
@@ -50,6 +51,7 @@ class EbayListing extends Model
     public function publishOffer()
     {
         $result = EbayApi::publishOffer($this->ebay_offer_id);
+
         if ($result['success']) {
             $this->update([
                 'ebay_listing_id' => $result['data']->listingId,

@@ -7,6 +7,7 @@ use Andyts93\LaravelEbay\Models\EbayListing;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class EbayRestApiService
 {
@@ -29,6 +30,20 @@ class EbayRestApiService
         return $this->makeRequest('GET', $this->baseUrl . '/sell/inventory/v1/location');
     }
 
+    public function createInventoryLocation(array $data)
+    {
+        $payload = [
+            'location' => [
+                'address' => $data['address'],
+            ],
+            'locationTypes' => $data['locationTypes'],
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+        ];
+
+        return $this->makeRequest('POST', $this->baseUrl . '/sell/inventory/v1/location/' . Str::slug($data['name']), $payload);
+    }
+
     /**
      * Create an inventory item
      */
@@ -37,11 +52,6 @@ class EbayRestApiService
         $url = $this->baseUrl . '/sell/inventory/v1/inventory_item/' . $sku;
 
         $payload = [
-            'availability' => [
-                'shipToLocationAvailability' => [
-                    'quantity' => $itemData['quantity']
-                ]
-            ],
             'condition' => $itemData['condition'] ?? 'NEW',
             'product' => [
                 'title' => $itemData['title'],
@@ -55,10 +65,14 @@ class EbayRestApiService
         return $this->makeRequest('PUT', $url, $payload);
     }
 
+    public function getInventoryItem(string $sku) {
+        return $this->makeRequest('GET', $this->baseUrl . '/sell/inventory/v1/inventory_item/' . $sku);
+    }
+
     /**
      * Create an offer (listing)
      */
-    public function upsertOffer($offerData, $offerId = null)
+    public function upsertOffer($offerData, $offerId = null, $customPayload = [])
     {
         $url = $this->baseUrl . '/sell/inventory/v1/offer';
         $method = "POST";
@@ -79,7 +93,13 @@ class EbayRestApiService
             'tax' => [
                 'applyTax' => true,
                 'thirdPartyTaxCategory' => 'STANDARD',
-            ]
+            ],
+            'listingPolicies' => [
+                'returnPolicyId' => EbaySettings::get('return_policy_id'),
+                'fulfillmentPolicyId' => EbaySettings::get('fulfillment_policy_id'),
+                'paymentPolicyId' => EbaySettings::get('payment_policy_id'),
+            ],
+            ...$customPayload
         ];
 
         if ($offerId) {
@@ -210,10 +230,32 @@ class EbayRestApiService
      */
     public function getCategoryAspects($categoryId)
     {
-        $url = $this->baseUrl . '/commerce/taxonomy/v1/category_tree/' . $this->marketplaceId . '/get_item_aspects_for_category';
+        $rootCategory = $this->getRootCategory()['data']->categoryTreeId;
+
+        $url = $this->baseUrl . '/commerce/taxonomy/v1/category_tree/' . $rootCategory . '/get_item_aspects_for_category';
         $url .= '?category_id=' . $categoryId;
 
         return $this->makeRequest('GET', $url);
+    }
+
+    public function getReturnPolicies()
+    {
+        return $this->makeRequest('GET', $this->baseUrl . '/sell/account/v1/return_policy?marketplace_id=' . config('ebay.marketplace_id'));
+    }
+
+    public function getPaymentPolicies()
+    {
+        return $this->makeRequest('GET', $this->baseUrl . '/sell/account/v1/payment_policy?marketplace_id=' . config('ebay.marketplace_id'));
+    }
+
+    public function getFulfillmentPolicies()
+    {
+        return $this->makeRequest('GET', $this->baseUrl . '/sell/account/v1/fulfillment_policy?marketplace_id=' . config('ebay.marketplace_id'));
+    }
+
+    public function getItemConditionPolicies(array $categories)
+    {
+        return $this->makeRequest('GET', $this->baseUrl . '/sell/metadata/v1/marketplace/' . config('ebay.marketplace_id') . '/get_item_condition_policies?filter=categoryIds' . urlencode(':{'.implode('|', $categories).'}'));
     }
 
     public function getOrders($orderIds = [], $filter = [], $limit = 50, $offset = 0, $taxBreakdown = false)
