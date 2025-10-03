@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static string getOAuthUrl()
  * @method static string askAccessToken(string|null $refreshToken, string|null $code = null)
+ * @method static array getUser()
  * @method static array getInventoryLocations()
  * @method static array createInventoryLocation(array $data)
  * @method static array upsertInventoryItem(string $sku, array $itemData, array $customPayload = [])

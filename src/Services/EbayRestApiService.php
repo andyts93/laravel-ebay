@@ -25,6 +25,11 @@ class EbayRestApiService
             : 'https://api.ebay.com';
     }
 
+    public function getUser()
+    {
+        return $this->makeRequest('GET', 'https://apiz.ebay.com/commerce/identity/v1/user');
+    }
+
     public function getInventoryLocations()
     {
         return $this->makeRequest('GET', $this->baseUrl . '/sell/inventory/v1/location');
@@ -55,7 +60,7 @@ class EbayRestApiService
             'condition' => $itemData['condition'] ?? 'NEW',
             'product' => [
                 'title' => $itemData['title'],
-                'description' => $itemData['description'],
+                ...(isset($itemData['description']) ? ['description' => $itemData['description']] : []),
                 ...(isset($itemData['images']) ? ['imageUrls' => $itemData['images']] : []),
                 'aspects' => $itemData['aspects'] ?? [],
             ],
@@ -344,11 +349,12 @@ class EbayRestApiService
                 return $this->makeRequest($method, $url, $payload, $retries + 1);
             }
 
-            return [
-                'success' => false,
-                'status_code' => $e->getCode(),
-                'error' => $errorData->errors ?? $e->getMessage()
-            ];
+            throw new \Exception(json_encode($errorData->errors) ?? $e->getMessage(), $e->getCode());
+//            return [
+//                'success' => false,
+//                'status_code' => $e->getCode(),
+//                'error' => $errorData->errors ?? $e->getMessage()
+//            ];
         }
     }
 

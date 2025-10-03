@@ -72,6 +72,13 @@ return new class extends Migration {
                 'description' => 'Fulfillment policy',
                 'is_public' => true,
             ],
+            [
+                'key' => 'username',
+                'value' => null,
+                'type' => 'string',
+                'description' => 'eBay username',
+                'is_public' => true,
+            ],
         ];
 
         foreach ($defaultSettings as $setting) {
