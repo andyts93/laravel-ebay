@@ -38,7 +38,6 @@ class EbayListing extends Model
             'sku' => $this->sku,
             ...$offerData,
         ], $this->ebay_offer_id, $customPayload);
-        dd($result);
 
         if ($result['success']) {
             $this->update([
