@@ -42,7 +42,8 @@ class EbayListing extends Model
         if ($result['success']) {
             $this->update([
                 'ebay_price' => $offerData['price'],
-                'ebay_category_id' => $offerData['category_id']
+                'ebay_category_id' => $offerData['category_id'],
+                'updated_at' => now(),
             ]);
         }
     }

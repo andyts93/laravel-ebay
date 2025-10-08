@@ -126,6 +126,16 @@ class EbayRestApiService
     }
 
     /**
+     * Deletes an offer
+     */
+    public function deleteOffer($offerId)
+    {
+        $url = $this->baseUrl . '/sell/inventory/v1/offer/' . $offerId;
+
+        return $this->makeRequest('DELETE', $url);
+    }
+
+    /**
      * Create fulfillment policy (shipping)
      */
     public function createFulfillmentPolicy($policyData)

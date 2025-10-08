@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array upsertInventoryItem(string $sku, array $itemData, array $customPayload = [])
  * @method static array upsertOffer(array $offerData, string $offerId = null, array $customPayload = [])
  * @method static array publishOffer(string $offerId)
+ * @method static array deleteOffer(string $offerId)
  * @method static array createFulfillmentPolicy(array $policyData)
  * @method static array createPaymentPolicy(array $policyData)
  * @method static array createReturnPolicy(array $policyData)
