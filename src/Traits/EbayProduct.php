@@ -27,13 +27,13 @@ trait EbayProduct
         );
     }
 
-    public function ebayCreateOffer($offerData)
+    public function ebayCreateOffer($offerData, $customPayload = [])
     {
         $result = EbayApi::upsertOffer(
             [
                 'sku' => $this->getAttribute($this->getSkuKeyName()),
                 ...$offerData,
-            ]
+            ], null, $customPayload
         );
 
         $offerId = null;
