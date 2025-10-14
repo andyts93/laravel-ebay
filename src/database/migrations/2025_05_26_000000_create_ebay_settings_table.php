@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->id();
             $table->string('key')->unique();
             $table->text('value')->nullable();
-            $table->enum('type', ['string', 'integer', 'boolean', 'json'])->default('string');
+            $table->enum('type', ['string', 'integer', 'boolean', 'json', 'float'])->default('string');
             $table->text('description')->nullable();
             $table->boolean('is_public')->default(false);
             $table->timestamps();
@@ -77,6 +77,13 @@ return new class extends Migration {
                 'value' => null,
                 'type' => 'string',
                 'description' => 'eBay username',
+                'is_public' => true,
+            ],
+            [
+                'key' => 'markup',
+                'value' => 0,
+                'type' => 'float',
+                'description' => 'Markup on products',
                 'is_public' => true,
             ],
         ];

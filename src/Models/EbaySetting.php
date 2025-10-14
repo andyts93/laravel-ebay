@@ -58,11 +58,13 @@ class EbaySetting extends \Illuminate\Database\Eloquent\Model
     public static function set($key, $value, $type = 'string')
     {
         $setting = static::firstOrNew(['key' => $key]);
-        $setting->value = $value;
-        $setting->type = $type;
-        $setting->save();
+        if ($setting->value != $value) {
+            $setting->value = $value;
+            $setting->type = $type;
+            $setting->save();
 
-        Cache::forget("ebay_settings.{$key}");
+            Cache::forget("ebay_settings.{$key}");
+        }
 
         return $setting;
     }
