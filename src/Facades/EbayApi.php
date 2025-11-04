@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getItemConditionPolicies(array $categories)
  * @method static array getInventoryItem(string $sku)
  * @method static array getOrders(array $orderIds = [], array $filter = [], integer $limit = 50, integer $offset = 0, array $fieldGroups = [])
+ * @method static array createShippingFulfillment(string $orderId, array $lineItems, string $shippedDate = null, ?string $shippingCarrierCode = null, ?string $trackingNumber = null)
  */
 class EbayApi extends Facade
 {

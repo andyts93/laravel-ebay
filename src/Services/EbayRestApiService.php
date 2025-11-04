@@ -296,6 +296,27 @@ class EbayRestApiService
         return $this->makeRequest('GET', $url);
     }
 
+    public function createShippingFulfillment(string $orderId, array $lineItems, ?string $shippedDate = null, ?string $shippingCarrierCode = null, ?string $trackingNumber = null)
+    {
+        $url = $this->baseUrl . "/sell/fulfillment/v1/order/{$orderId}/shipping_fulfillment";
+
+        $payload = [
+            'lineItems' => array_map(function ($el) {
+                return [
+                    'lineItemId' => $el['id'],
+                    'quantity' => $el['q']
+                ];
+            }, $lineItems),
+            ...(!empty($shippedDate) ? ['shippedDate' => $shippedDate] : []),
+            ...(!empty($shippingCarrierCode) ? [
+                'shippingCarrierCode' => $shippingCarrierCode,
+                'trackingNumber' => $trackingNumber
+            ] : [])
+        ];
+
+        return $this->makeRequest('POST', $url, $payload);
+    }
+
     private function buildShippingOptions($shippingOptions)
     {
         $options = [];
