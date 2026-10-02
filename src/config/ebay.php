@@ -9,9 +9,9 @@ return [
     | Access credentials
     |
     */
-    'client_id' => env('EBAY_CLIENT_ID'),
-    'client_secret' => env('EBAY_CLIENT_SECRET'),
-    'ru_name' => env('EBAY_RU_NAME'),
+    'client_id' => '',
+    'client_secret' => '',
+    'ru_name' => '',
     'scopes' => [
         'https://api.ebay.com/oauth/api_scope/sell.inventory',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
@@ -25,9 +25,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'sandbox' => env('EBAY_SANDBOX', true),
-    'marketplace_id' => env('EBAY_MARKETPLACE_ID', 'EBAY_IT'),
-    'default_content_language' => env('EBAY_CONTENT_LANGUAGE', 'it-IT'),
+    'sandbox' => true,
+    'marketplace_id' => 'EBAY_IT',
+    'default_content_language' => 'it-IT',
 
     /*
     |--------------------------------------------------------------------------
@@ -35,7 +35,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'paypal_email' => env('EBAY_PAYPAL_EMAIL'),
+    'paypal_email' => '',
 
     /*
     |--------------------------------------------------------------------------
